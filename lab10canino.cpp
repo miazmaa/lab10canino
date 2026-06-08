@@ -88,7 +88,7 @@ int main(void)
 			redraw = false;
 			for (int i = 0; i < 10;i++) {
 				alien[i].updatesprite();
-			}
+			} 
 			for (int i = 0; i < 10;i++) {
 				alien[i].drawSprite();
 			}
