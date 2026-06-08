@@ -19,9 +19,11 @@ private:
 	int curframe, maxframe, animdir;
 	int framecount, framedelay;
 	ALLEGRO_BITMAP* image[9];
+	ALLEGRO_COLOR color;
 	bool CollisionIsTrue;
 	bool SpinningSprite;
 	bool ScaredSprite;
 	bool BabySprite; //bottom 4 used to decide what the sprite is doing
 	bool FreezeSprite;
+	bool DeadSprite;
 };

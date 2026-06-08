@@ -8,7 +8,15 @@ using namespace std;
 
 void sprite::drawSprite()
 {
-	al_draw_bitmap(image[curframe], x, y, 0);
+	if (DeadSprite) {
+		return;
+	}
+	if (ScaredSprite) {
+		al_draw_tinted_bitmap(image[curframe], color, x, y, 0);
+	}
+	else {
+		al_draw_bitmap(image[curframe], x, y, 0);
+	}
 }
 
 void sprite::updatesprite()
@@ -87,8 +95,33 @@ void sprite::load_animated_sprite(int size)
 	curframe = 0;
 	framedelay = 5;
 	framecount = 0;
+	color = al_map_rgb(255, 255, 255);
+	CollisionIsTrue = false;
+	DeadSprite = false; //only for baby
+	SpinningSprite = false;
+	ScaredSprite = false;
+	BabySprite = false;
+	FreezeSprite = false;
+	
+	int skill= rand() % 4; //for picking sprite type
+	switch(skill)
+	{
+	case 0:
+		ScaredSprite = true;
+		break;
 
+	case 1:
+		BabySprite = true;
+		break;
 
+	case 2:
+		SpinningSprite = true;
+		break;
+
+	case 3:
+		FreezeSprite = true;
+		break;
+	}
 }
 
 sprite::~sprite()
@@ -101,8 +134,13 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 		if (i != me) {
 			if (x >= Sprites[i].getX() - width && x <= Sprites[i].getX() + width) {
 				if (y >= Sprites[i].getY() - height && y <= Sprites[i].getY() + height) {
-					x = rand() % WIDTH;
-					y = rand() % HEIGHT;
+					CollisionIsTrue = true;
+					//need collision time for freeze
+					if (ScaredSprite) {
+						color = al_map_rgb(rand() % 256, rand() % 256, rand() % 256);
+						x = rand() % WIDTH;
+						y = rand() % HEIGHT;
+					}
 				}
 			}
 		}

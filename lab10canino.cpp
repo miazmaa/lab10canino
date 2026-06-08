@@ -55,7 +55,7 @@ int main(void)
 			for (int i = 0; i < 10;i++) {
 				alien[i].bouncesprite(width, height);
 			}
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 10; i++) {
 				alien[i].Collision(alien, 5, i, width, height);
 			}
 			redraw = true;
