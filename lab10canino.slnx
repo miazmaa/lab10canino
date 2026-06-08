@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="lab10canino.vcxproj" />
+  <Project Path="lab10canino.vcxproj" Id="bf2d1538-1a02-448c-ac84-9671b4b4e3a4" />
 </Solution>

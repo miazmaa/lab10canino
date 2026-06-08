@@ -12,9 +12,8 @@ int main(void)
 	int height = 480;
 	bool done = false;
 	bool redraw = true;
+	srand(time(NULL));
 	const int FPS = 60;
-
-
 	//allegro variable
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;

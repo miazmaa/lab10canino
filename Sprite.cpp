@@ -17,6 +17,11 @@ void sprite::drawSprite()
 	else if (BabySprite && CollisionIsTrue && al_get_time() - collisionTime < 10.0) {
 		al_draw_scaled_bitmap(image[curframe], 0, 0, width, height, x, y, width * scale, height * scale, 0);
 	}
+	else if (SpinningSprite) {
+		float cx = width / 2.0f;
+		float cy = height / 2.0f;
+		al_draw_rotated_bitmap(image[curframe], cx, cy, x + cx, y + cy, angle, 0);
+	}
 	else {
 		al_draw_bitmap(image[curframe], x, y, 0);
 	}
@@ -24,6 +29,12 @@ void sprite::drawSprite()
 
 void sprite::updatesprite()
 {
+	if (SpinningSprite) {
+		angle += 0.05f; 
+		if (angle > 2 * ALLEGRO_PI) {
+			angle -= 2 * ALLEGRO_PI;
+		}
+	}
 	//update x position
 	if (++xcount > xdelay)
 	{
@@ -131,6 +142,7 @@ void sprite::load_animated_sprite(int size)
 	prevxspeed = xspeed;
 	prevyspeed = yspeed;
 	freeze = false;
+	angle = 0.0f;
 
 	animdir = 1;
 	xdelay = 0;
@@ -153,7 +165,6 @@ void sprite::load_animated_sprite(int size)
 
 	case 3:
 		FreezeSprite = true;
-		cout << "Freeze sprite created\n";
 		break;
 	}
 }
@@ -199,7 +210,6 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 
 						collisionTime = al_get_time();
 
-						cout << "Sprite frozen!\n";
 					}
 				}
 			}

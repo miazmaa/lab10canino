@@ -23,6 +23,7 @@ private:
 	ALLEGRO_COLOR color;
 	double collisionTime;
 	float scale; //for baby
+	float angle; //for spin
 	bool CollisionIsTrue;
 	bool SpinningSprite;
 	bool freeze;
