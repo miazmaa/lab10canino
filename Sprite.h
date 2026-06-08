@@ -20,6 +20,8 @@ private:
 	int framecount, framedelay;
 	ALLEGRO_BITMAP* image[9];
 	ALLEGRO_COLOR color;
+	double collisionTime;
+	float scale; //for baby
 	bool CollisionIsTrue;
 	bool SpinningSprite;
 	bool ScaredSprite;
