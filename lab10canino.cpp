@@ -2,6 +2,7 @@
 #include <allegro5\allegro_image.h>
 #include "Sprite.h"
 #include <iostream>
+#include <ctime>
 using namespace std;
 
 int main(void)
@@ -10,7 +11,6 @@ int main(void)
 	int width = 640;
 	int height = 480;
 	bool done = false;
-
 	bool redraw = true;
 	const int FPS = 60;
 
@@ -56,7 +56,7 @@ int main(void)
 				alien[i].bouncesprite(width, height);
 			}
 			for (int i = 0; i < 10; i++) {
-				alien[i].Collision(alien, 5, i, width, height);
+				alien[i].Collision(alien, 10, i, width, height);
 			}
 			redraw = true;
 		}
@@ -89,6 +89,7 @@ int main(void)
 
 
 			redraw = false;
+			al_clear_to_color(al_map_rgb(0, 0, 0));
 			for (int i = 0; i < 10;i++) {
 				alien[i].updatesprite();
 			} 

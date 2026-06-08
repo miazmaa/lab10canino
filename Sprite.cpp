@@ -10,12 +10,14 @@ void sprite::drawSprite()
 {
 	if (DeadSprite) {
 		return;
-	} else if (ScaredSprite && CollisionIsTrue && al_get_time() - collisionTime < 3.0) {
+	}
+	else if (ScaredSprite && CollisionIsTrue && al_get_time() - collisionTime < 3.0) {
 		al_draw_tinted_bitmap(image[curframe], color, x, y, 0);
 	}
 	else if (BabySprite && CollisionIsTrue && al_get_time() - collisionTime < 10.0) {
 		al_draw_scaled_bitmap(image[curframe], 0, 0, width, height, x, y, width * scale, height * scale, 0);
-	} else {
+	}
+	else {
 		al_draw_bitmap(image[curframe], x, y, 0);
 	}
 }
@@ -48,8 +50,16 @@ void sprite::updatesprite()
 	{
 		if (ScaredSprite && al_get_time() - collisionTime > 3.0)
 			CollisionIsTrue = false;
-		if (FreezeSprite && al_get_time() - collisionTime > 5.0)
+		if (FreezeSprite && freeze && al_get_time() - collisionTime > 5.0)
+		{
+			xspeed = prevxspeed;
+			yspeed = prevyspeed;
+
+			freeze = false;
 			CollisionIsTrue = false;
+			x += xspeed;
+			y += yspeed;
+		}
 		if (BabySprite && al_get_time() - collisionTime > 10.0)
 			CollisionIsTrue = false;
 	}
@@ -112,9 +122,22 @@ void sprite::load_animated_sprite(int size)
 	ScaredSprite = false;
 	BabySprite = false;
 	FreezeSprite = false;
+	xspeed = rand() % 5 + 1;
+	yspeed = rand() % 5 + 1;
+	x = rand() % 600;
+	y = rand() % 440;
+	xcount = 0;
+	ycount = 0;
+	prevxspeed = xspeed;
+	prevyspeed = yspeed;
+	freeze = false;
+
+	animdir = 1;
+	xdelay = 0;
+	ydelay = 0;
 	scale = 1.0f;
-	int skill= rand() % 4; //for picking sprite type
-	switch(skill)
+	int skill = rand() % 4; //for picking sprite type
+	switch (skill)
 	{
 	case 0:
 		ScaredSprite = true;
@@ -130,6 +153,7 @@ void sprite::load_animated_sprite(int size)
 
 	case 3:
 		FreezeSprite = true;
+		cout << "Freeze sprite created\n";
 		break;
 	}
 }
@@ -144,8 +168,11 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 		if (i != me) {
 			if (x >= Sprites[i].getX() - width && x <= Sprites[i].getX() + width) {
 				if (y >= Sprites[i].getY() - height && y <= Sprites[i].getY() + height) {
-					CollisionIsTrue = true;
-					collisionTime = al_get_time();
+					if (!CollisionIsTrue)
+					{
+						CollisionIsTrue = true;
+						collisionTime = al_get_time();
+					}
 					if (ScaredSprite) {
 						color = al_map_rgb(rand() % 256, rand() % 256, rand() % 256);
 						x = rand() % WIDTH;
@@ -159,6 +186,20 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 							DeadSprite = true;
 							cout << "Sprite is dead!";
 						}
+					}
+					if (FreezeSprite && !freeze)
+					{
+						freeze = true;
+
+						prevxspeed = xspeed;
+						prevyspeed = yspeed;
+
+						xspeed = 0;
+						yspeed = 0;
+
+						collisionTime = al_get_time();
+
+						cout << "Sprite frozen!\n";
 					}
 				}
 			}

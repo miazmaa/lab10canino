@@ -14,6 +14,7 @@ private:
 	int x, y;
 	int width, height;
 	int xspeed, yspeed;
+	int prevxspeed, prevyspeed;
 	int xdelay, ydelay;
 	int xcount, ycount;
 	int curframe, maxframe, animdir;
@@ -24,6 +25,7 @@ private:
 	float scale; //for baby
 	bool CollisionIsTrue;
 	bool SpinningSprite;
+	bool freeze;
 	bool ScaredSprite;
 	bool BabySprite; //bottom 4 used to decide what the sprite is doing
 	bool FreezeSprite;
