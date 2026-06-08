@@ -96,3 +96,15 @@ sprite::~sprite()
 	for (int i = 0; i < maxframe; i++)
 		al_destroy_bitmap(image[i]);
 }
+void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGHT) {
+	for (int i = 0; i < cSize; i++) {
+		if (i != me) {
+			if (x >= Sprites[i].getX() - width && x <= Sprites[i].getX() + width) {
+				if (y >= Sprites[i].getY() - height && y <= Sprites[i].getY() + height) {
+					x = rand() % WIDTH;
+					y = rand() % HEIGHT;
+				}
+			}
+		}
+	}
+}

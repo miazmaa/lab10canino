@@ -8,7 +8,7 @@ public:
 	void drawSprite();
 	int getX() { return x; }
 	int getY() { return y; }
-
+	void Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGHT);
 
 private:
 	int x, y;
