@@ -29,6 +29,8 @@ void sprite::drawSprite()
 
 void sprite::updatesprite()
 {
+	prevx = x;
+	prevy = y;
 	if (SpinningSprite) {
 		angle += 0.05f; 
 		if (angle > 2 * ALLEGRO_PI) {
@@ -59,6 +61,9 @@ void sprite::updatesprite()
 	}
 	if (CollisionIsTrue)
 	{
+		if (SpinningSprite) {
+			CollisionIsTrue = false;
+		}
 		if (ScaredSprite && al_get_time() - collisionTime > 3.0)
 			CollisionIsTrue = false;
 		if (FreezeSprite && freeze && al_get_time() - collisionTime > 5.0)
@@ -210,6 +215,12 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 
 						collisionTime = al_get_time();
 
+					}
+					else if (SpinningSprite) {
+						x = prevx;
+						y = prevy; //restores previous position on collision
+						CollisionIsTrue = true;
+						collisionTime = al_get_time();
 					}
 				}
 			}

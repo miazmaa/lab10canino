@@ -12,6 +12,7 @@ public:
 
 private:
 	int x, y;
+	int prevx, prevy;
 	int width, height;
 	int xspeed, yspeed;
 	int prevxspeed, prevyspeed;
