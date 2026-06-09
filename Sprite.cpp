@@ -1,5 +1,6 @@
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_image.h>
+#include <allegro5/allegro_primitives.h>
 #include <stdio.h>
 #include "Sprite.h"
 
@@ -11,19 +12,21 @@ void sprite::drawSprite()
 	if (DeadSprite) {
 		return;
 	}
-	else if (ScaredSprite && CollisionIsTrue && al_get_time() - collisionTime < 3.0) {
-		al_draw_tinted_bitmap(image[curframe], color, x, y, 0);
+	int fx = (curframe % animationColumns) * frameWidth;
+	int fy = (curframe / animationColumns) * frameHeight;
+	if (ScaredSprite && CollisionIsTrue && al_get_time() - collisionTime < 3.0) {
+		al_draw_tinted_scaled_bitmap(image,color,fx, fy,frameWidth, frameHeight,x, y,frameWidth * scale,frameHeight * scale,0);
 	}
 	else if (BabySprite && CollisionIsTrue && al_get_time() - collisionTime < 10.0) {
-		al_draw_scaled_bitmap(image[curframe], 0, 0, width, height, x, y, width * scale, height * scale, 0);
+		al_draw_scaled_bitmap(image, fx, fy, frameWidth, frameHeight, x, y, frameWidth * scale, frameHeight * scale, 0);
 	}
 	else if (SpinningSprite) {
-		float cx = width / 2.0f;
-		float cy = height / 2.0f;
-		al_draw_rotated_bitmap(image[curframe], cx, cy, x + cx, y + cy, angle, 0);
+		float cx = frameWidth / 2.0f;
+		float cy = frameHeight / 2.0f;
+		al_draw_scaled_rotated_bitmap(frames[curframe],cx, cy,x + cx * scale,y + cy * scale,scale,scale,angle,0);
 	}
 	else {
-		al_draw_bitmap(image[curframe], x, y, 0);
+		al_draw_scaled_bitmap(image, fx, fy, frameWidth, frameHeight, x, y, frameWidth * scale, frameHeight * scale, 0);
 	}
 }
 
@@ -116,18 +119,24 @@ void sprite::bouncesprite(int SCREEN_W, int SCREEN_H)
 
 void sprite::load_animated_sprite(int size)
 {
-	//load the animated sprite
-	char s[80];
-	maxframe = size;
-	for (int n = 0; n < size; n++)
-	{
-		sprintf_s(s, "Alien%d.bmp", n);
-		image[n] = al_load_bitmap(s);
-
-		al_convert_mask_to_alpha(image[n], al_map_rgb(255, 255, 255));
+	image = al_load_bitmap("mega.png");
+	if (image) { al_convert_mask_to_alpha(image,al_map_rgb(255, 255, 255));
 	}
-	width = al_get_bitmap_width(image[0]);
-	height = al_get_bitmap_height(image[0]);
+	frameWidth = al_get_bitmap_width(image) / 5;
+	frameHeight = al_get_bitmap_height(image) / 2;
+	animationColumns = 5;
+	maxframe = 10;
+
+	for (int i = 0; i < maxframe; i++)
+	{
+		int fx = (i % animationColumns) * frameWidth;
+		int fy = (i / animationColumns) * frameHeight;
+
+		frames[i] = al_create_sub_bitmap(image, fx, fy, frameWidth, frameHeight);
+	}
+	framedelay = 5;
+	framecount = 0;
+	color = al_map_rgb(255, 255, 255);
 	curframe = 0;
 	framedelay = 5;
 	framecount = 0;
@@ -148,11 +157,12 @@ void sprite::load_animated_sprite(int size)
 	prevyspeed = yspeed;
 	freeze = false;
 	angle = 0.0f;
-
+	scale = 0.5f;                  
+	width = frameWidth * scale;      
+	height = frameHeight * scale;
 	animdir = 1;
 	xdelay = 0;
 	ydelay = 0;
-	scale = 1.0f;
 	int skill = rand() % 4; //for picking sprite type
 	switch (skill)
 	{
@@ -177,7 +187,9 @@ void sprite::load_animated_sprite(int size)
 sprite::~sprite()
 {
 	for (int i = 0; i < maxframe; i++)
-		al_destroy_bitmap(image[i]);
+		al_destroy_bitmap(frames[i]);
+	if (image)
+		al_destroy_bitmap(image);
 }
 void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGHT) {
 	for (int i = 0; i < cSize; i++) {
@@ -196,6 +208,8 @@ void sprite::Collision(sprite Sprites[], int cSize, int me, int WIDTH, int HEIGH
 					}
 					else if (BabySprite) {
 						scale *= 0.5f;
+						width = frameWidth * scale;
+						height = frameHeight * scale;
 						x = rand() % WIDTH;
 						y = rand() % HEIGHT;
 						if (scale <= 0.1f) {

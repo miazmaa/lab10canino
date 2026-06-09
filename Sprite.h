@@ -20,8 +20,9 @@ private:
 	int xcount, ycount;
 	int curframe, maxframe, animdir;
 	int framecount, framedelay;
-	ALLEGRO_BITMAP* image[9];
+	ALLEGRO_BITMAP* image;
 	ALLEGRO_COLOR color;
+	ALLEGRO_BITMAP* frames[10];
 	double collisionTime;
 	float scale; //for baby
 	float angle; //for spin
@@ -32,4 +33,7 @@ private:
 	bool BabySprite; //bottom 4 used to decide what the sprite is doing
 	bool FreezeSprite;
 	bool DeadSprite;
+	int frameWidth;
+	int frameHeight;
+	int animationColumns;
 };
